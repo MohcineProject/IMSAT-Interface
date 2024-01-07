@@ -11,4 +11,7 @@ public class MenuControl {
 public void createNewTemplate() {
 	fr.createNewTemplate();
 }
+public void createHelpPage() {
+	fr.createHelpPage();
+}
 }

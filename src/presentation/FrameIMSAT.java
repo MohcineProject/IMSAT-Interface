@@ -1,5 +1,9 @@
 package presentation;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -10,16 +14,26 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
+
+import control.AddMetricControl;
 import control.MenuControl;
 
 
 public class FrameIMSAT extends JFrame {
 	JPanel Ntemplate ;
+	JPanel helpPage ;
+	JPanel metrics ; 
+	JPanel centerButt ; 
 	public FrameIMSAT() {
 		super("TMSAT") ; 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -31,7 +45,7 @@ public class FrameIMSAT extends JFrame {
 		JMenu mnNewMenu = new JMenu("File");
 		menuBar.add(mnNewMenu);
 		
-		JMenu HelpNewMenu = new JMenu("Help");
+		JMenuItem HelpNewMenu = new JMenuItem("Help");
 		menuBar.add(HelpNewMenu);
 		
 		JMenuItem mntmNewMenuItem = new JMenuItem("New Template");
@@ -62,18 +76,20 @@ public class FrameIMSAT extends JFrame {
 		setContentPane(welcome);
 		
 		//Creating the second page of the templates 
+			//Creating the global Plane
 		Ntemplate = new JPanel();
 		GridBagLayout gbl_Ntemplate = new GridBagLayout();
 		gbl_Ntemplate.rowWeights = new double[]{1.0};
 		gbl_Ntemplate.columnWeights = new double[]{1.0, 1.0, 1.0};
 		Ntemplate.setLayout(gbl_Ntemplate);
 		
-		
+			//Creating the metrics side
 		GridBagConstraints c1 = new GridBagConstraints();
 		c1.fill = GridBagConstraints.BOTH ;
 		c1.gridheight = 1 ; 
-		JPanel metrics = new JPanel() ; 
+		metrics = new JPanel() ; 
 		metrics.setLayout(new BorderLayout());
+		metrics.setMaximumSize(metrics.getSize());
 		JLabel metricsLabel = new JLabel("metrics");
 		metricsLabel.setBackground(new Color(255));
 		metricsLabel.setOpaque(true);
@@ -85,9 +101,30 @@ public class FrameIMSAT extends JFrame {
 		gNorth1.add(metricsLabel, BorderLayout.CENTER) ;
 		//
 		metrics.add(gNorth1,BorderLayout.NORTH);
+		JButton addMetric = new JButton("Add a metric") ;
+		AddMetricControl amc = new AddMetricControl(this) ; 
+		AddMetricListener aml = new AddMetricListener(amc, this) ; 
+		addMetric.addActionListener(aml);
+		
+		centerButt = new JPanel();
+		centerButt.setLayout(new BoxLayout(centerButt , BoxLayout.PAGE_AXIS));
+		JPanel addPanel = new JPanel();
+		addPanel.setLayout(new BoxLayout(addPanel, BoxLayout.LINE_AXIS));
+		addPanel.add(Box.createHorizontalGlue()) ; 
+		addPanel.add(addMetric);
+		addPanel.add(Box.createHorizontalGlue()) ;
+		centerButt.add(Box.createRigidArea(new Dimension(0,30))) ;
+		centerButt.add(addPanel) ; 
+		centerButt.add(Box.createRigidArea(new Dimension(0,10)));
+		metrics.add(centerButt, BorderLayout.CENTER);
 		c1.gridx = 0 ; 
 		c1.gridy = 0 ; 
 		Ntemplate.add(metrics, c1) ; 
+		
+		
+		
+		
+		
 		
 		
 		GridBagConstraints c2 = new GridBagConstraints();
@@ -133,18 +170,131 @@ public class FrameIMSAT extends JFrame {
 		c3.gridx = 2; 
 		c3.gridy = 0 ; 
 		Ntemplate.add(storage, c3) ; 
-		
+
+		//Design the help Page:
+		helpPage = new JPanel() ; 
+		helpPage.setLayout(new BorderLayout());
+		String helpTitleText = "IMSAT project : " ; 
+		JLabel helpTitle = new JLabel(helpTitleText) ; 
+		JPanel titlePanel = new JPanel() ; 
+		titlePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+		titlePanel.add(helpTitle);
+		JTextArea helpDescription = new JTextArea("The IMSAT project is conducted by the IMSAT club at IMT atlantique. It aims at sending a cubesat to a high altitude in order to capture"+ "\n" 
+				+ " data and measurements of various physical attributes. This application is the designed to capture the data send by the satellite as well"+ "\n"
+				+ " as to display and store useful information for the user. This application under continuous developement for educational purposes. The "+ "\n"
+				+ "code is freely available on Github, in Java. We are relying on futur developements to further enhance the application and add more "+ "\n"
+				+ "features (specially from the TAF DCL students to gain a hand on experience in coding ") ; 
+		JPanel helpDescriptionPanel = new JPanel();
+		helpDescriptionPanel.setLayout(new FlowLayout(FlowLayout.LEADING)) ; 
+		helpDescriptionPanel.add(helpDescription);
+		helpPage.add(titlePanel, BorderLayout.NORTH) ; 
+		helpPage.add(helpDescriptionPanel, BorderLayout.CENTER); 
 		
 		//Assigning the listeners 
-			//Listener of new Template
 		MenuControl mc = new MenuControl(this);
+			//Listener of new Template
 		NewFileListener nfl = new NewFileListener(mc);
 		mntmNewMenuItem.addActionListener(nfl);
+		   //Listener of HelpPage
+		HelpListner helpPageListner = new HelpListner(mc);
+		HelpNewMenu.addActionListener(helpPageListner);
+		
+		
+		
 		
 	}
 public void createNewTemplate() {
 	setContentPane(Ntemplate);
 	Ntemplate.revalidate() ;
 }
+public void createHelpPage() {
+	setContentPane(helpPage);
+	helpPage.revalidate() ;
+	this.revalidate();
+}
 
+
+
+
+public  void showDialog(JFrame parentFrame) {
+    JDialog dialog = new JDialog(parentFrame, "Metric options", true);
+
+    // Create components for the dialog
+    JLabel labelName = new JLabel("Name :");
+    JPanel namepane = new JPanel();
+    namepane.setLayout(new BoxLayout(namepane, BoxLayout.LINE_AXIS));
+    namepane.add(labelName);
+    namepane.add(Box.createHorizontalGlue()) ;
+    JTextField inputName = new JTextField();
+   
+    JLabel labelDimension = new JLabel("Dimension :");
+    JPanel dimensionpane = new JPanel();
+    dimensionpane.setLayout(new BoxLayout(dimensionpane, BoxLayout.LINE_AXIS));
+    dimensionpane.add(labelDimension);
+    dimensionpane.add(Box.createHorizontalGlue()) ;
+    JTextField inputDimension = new JTextField();
+    
+    //Create dialog buttons 
+    JButton closeButton = new JButton("Close");
+    JButton addButton = new JButton("Add");
+    AddMetricControl amc = new AddMetricControl(this) ;
+    addButton.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String dimensionName = inputName.getText();
+			String dimension = inputDimension.getText();
+			amc.addMetricButton(dimensionName, dimension);
+			dialog.dispose();
+			
+		}
+	}) ;
+    JPanel buttonPane = new JPanel() ;
+    buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+    buttonPane.add(Box.createHorizontalGlue());
+    buttonPane.add(addButton) ; 
+    buttonPane.add(Box.createRigidArea(new Dimension(10,0)));
+    buttonPane.add(closeButton) ; 
+    
+
+    // Add components to the dialog
+    JPanel jp = new JPanel();
+    jp.setLayout(new BoxLayout(jp,BoxLayout.PAGE_AXIS));
+    inputName.setPreferredSize(new Dimension(300, inputName.getHeight()));
+    inputDimension.setPreferredSize(new Dimension(300, inputDimension.getHeight()));
+    jp.add(namepane);
+    jp.add(Box.createRigidArea(new Dimension(0,5)));
+    jp.add(inputName);
+    jp.add(dimensionpane);
+    jp.add(inputDimension);
+    jp.add(buttonPane);
+    dialog.add(jp);
+
+    // Set up action for the close button
+    closeButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Close the dialog when the button is clicked
+            dialog.dispose();
+        }
+    });
+
+    // Set dialog properties
+    dialog.setSize(400, 150);
+    dialog.setLocationRelativeTo(parentFrame);
+    dialog.setVisible(true);
+}
+public void addMetricToNtemplate(String dimensionName, String dimension) {
+	JButton newDimension = new JButton(dimensionName) ;
+	newDimension.setToolTipText( dimension);
+	JPanel newAddPanel = new JPanel();
+	newAddPanel.setLayout(new BoxLayout(newAddPanel, BoxLayout.LINE_AXIS));
+	newAddPanel.add(Box.createHorizontalGlue()) ; 
+	newAddPanel.add(newDimension);
+	newAddPanel.add(Box.createHorizontalGlue()) ; 
+	centerButt.add(newAddPanel) ;
+	centerButt.add(Box.createRigidArea(new Dimension(0,10)));
+	Ntemplate.revalidate();
+	
+}
 }

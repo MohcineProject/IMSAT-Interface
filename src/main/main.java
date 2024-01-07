@@ -3,11 +3,13 @@ package main;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
+
+
 import presentation.FrameIMSAT;
 
 public class main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args)  {
 		FrameIMSAT fi = new FrameIMSAT();
         // Set your preferred size (you can adjust this according to your needs)
         int width = 800;
@@ -24,5 +26,6 @@ public class main {
 		fi.setVisible(true);
 
 	}
+	
 
 }
