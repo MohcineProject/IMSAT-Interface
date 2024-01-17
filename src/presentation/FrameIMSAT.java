@@ -16,6 +16,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -23,6 +24,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import org.jfree.chart.ChartPanel;
 
 
 import control.AddMetricControl;
@@ -34,29 +37,31 @@ public class FrameIMSAT extends JFrame {
 	JPanel helpPage ;
 	JPanel metrics ; 
 	JPanel centerButt ; 
+	JPanel graph ;
+	AddMetricControl amc ; 
 	public FrameIMSAT() {
 		super("TMSAT") ; 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
+
 		//Configuring the Menu Items 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-		
+
 		JMenu mnNewMenu = new JMenu("File");
 		menuBar.add(mnNewMenu);
-		
+
 		JMenuItem HelpNewMenu = new JMenuItem("Help");
 		menuBar.add(HelpNewMenu);
-		
+
 		JMenuItem mntmNewMenuItem = new JMenuItem("New Template");
 		mnNewMenu.add(mntmNewMenuItem);
-		
+
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Open Template");
 		mnNewMenu.add(mntmNewMenuItem_1);
-		
+
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Save");
 		mnNewMenu.add(mntmNewMenuItem_2);
-		
+
 		//Creating the Welcome Panel 
 		JPanel welcome = new JPanel() ;
 		JLabel hello = new JLabel(" Welcome in the cube satellite \n Interface ") ;
@@ -74,16 +79,24 @@ public class FrameIMSAT extends JFrame {
 		c.gridheight = 1 ; 
 		welcome.add(hello,c ) ; 
 		setContentPane(welcome);
+
+		
+		
 		
 		//Creating the second page of the templates 
-			//Creating the global Plane
+		//Creating the global Plane
 		Ntemplate = new JPanel();
 		GridBagLayout gbl_Ntemplate = new GridBagLayout();
 		gbl_Ntemplate.rowWeights = new double[]{1.0};
 		gbl_Ntemplate.columnWeights = new double[]{1.0, 1.0, 1.0};
 		Ntemplate.setLayout(gbl_Ntemplate);
+
 		
-			//Creating the metrics side
+		
+		
+		
+		
+		//Creating the metrics side
 		GridBagConstraints c1 = new GridBagConstraints();
 		c1.fill = GridBagConstraints.BOTH ;
 		c1.gridheight = 1 ; 
@@ -102,10 +115,10 @@ public class FrameIMSAT extends JFrame {
 		//
 		metrics.add(gNorth1,BorderLayout.NORTH);
 		JButton addMetric = new JButton("Add a metric") ;
-		AddMetricControl amc = new AddMetricControl(this) ; 
+		amc = new AddMetricControl(this) ; 
 		AddMetricListener aml = new AddMetricListener(amc, this) ; 
 		addMetric.addActionListener(aml);
-		
+
 		centerButt = new JPanel();
 		centerButt.setLayout(new BoxLayout(centerButt , BoxLayout.PAGE_AXIS));
 		JPanel addPanel = new JPanel();
@@ -120,18 +133,18 @@ public class FrameIMSAT extends JFrame {
 		c1.gridx = 0 ; 
 		c1.gridy = 0 ; 
 		Ntemplate.add(metrics, c1) ; 
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
 		GridBagConstraints c2 = new GridBagConstraints();
 		c2.fill = GridBagConstraints.BOTH;
 		c2.anchor = GridBagConstraints.CENTER;
 		c2.gridheight = 1;
-		JPanel graph = new JPanel() ; 
+		graph = new JPanel() ; 
 		graph.setLayout(new BorderLayout());
 		JLabel graphLabel = new JLabel("graph");
 		graphLabel.setBackground(new Color(255));
@@ -144,9 +157,14 @@ public class FrameIMSAT extends JFrame {
 		gNorth2.add(graphLabel, BorderLayout.CENTER) ; 
 		//
 		graph.add(gNorth2, BorderLayout.NORTH);
+		JButton screenShot = new JButton("ScreenShot") ;
+		
 		c2.gridx = 1 ; 
 		c2.gridy = 0 ; 
 		Ntemplate.add(graph, c2) ;
+
+
+		
 		
 		
 		GridBagConstraints c3 = new GridBagConstraints();
@@ -171,6 +189,10 @@ public class FrameIMSAT extends JFrame {
 		c3.gridy = 0 ; 
 		Ntemplate.add(storage, c3) ; 
 
+		
+		
+		
+		
 		//Design the help Page:
 		helpPage = new JPanel() ; 
 		helpPage.setLayout(new BorderLayout());
@@ -189,112 +211,154 @@ public class FrameIMSAT extends JFrame {
 		helpDescriptionPanel.add(helpDescription);
 		helpPage.add(titlePanel, BorderLayout.NORTH) ; 
 		helpPage.add(helpDescriptionPanel, BorderLayout.CENTER); 
-		
+
 		//Assigning the listeners 
 		MenuControl mc = new MenuControl(this);
-			//Listener of new Template
+		//Listener of new Template
 		NewFileListener nfl = new NewFileListener(mc);
 		mntmNewMenuItem.addActionListener(nfl);
-		   //Listener of HelpPage
+		//Listener of HelpPage
 		HelpListner helpPageListner = new HelpListner(mc);
 		HelpNewMenu.addActionListener(helpPageListner);
-		
-		
-		
-		
+
+
 	}
-public void createNewTemplate() {
-	setContentPane(Ntemplate);
-	Ntemplate.revalidate() ;
-}
-public void createHelpPage() {
-	setContentPane(helpPage);
-	helpPage.revalidate() ;
-	this.revalidate();
-}
+	public void createNewTemplate() {
+		setContentPane(Ntemplate);
+		Ntemplate.revalidate() ;
+	}
+	public void createHelpPage() {
+		setContentPane(helpPage);
+		helpPage.revalidate() ;
+		this.revalidate();
+	}
 
 
 
 
-public  void showDialog(JFrame parentFrame) {
-    JDialog dialog = new JDialog(parentFrame, "Metric options", true);
 
-    // Create components for the dialog
-    JLabel labelName = new JLabel("Name :");
-    JPanel namepane = new JPanel();
-    namepane.setLayout(new BoxLayout(namepane, BoxLayout.LINE_AXIS));
-    namepane.add(labelName);
-    namepane.add(Box.createHorizontalGlue()) ;
-    JTextField inputName = new JTextField();
-   
-    JLabel labelDimension = new JLabel("Dimension :");
-    JPanel dimensionpane = new JPanel();
-    dimensionpane.setLayout(new BoxLayout(dimensionpane, BoxLayout.LINE_AXIS));
-    dimensionpane.add(labelDimension);
-    dimensionpane.add(Box.createHorizontalGlue()) ;
-    JTextField inputDimension = new JTextField();
-    
-    //Create dialog buttons 
-    JButton closeButton = new JButton("Close");
-    JButton addButton = new JButton("Add");
-    AddMetricControl amc = new AddMetricControl(this) ;
-    addButton.addActionListener(new ActionListener() {
+	public  void showDialog(JFrame parentFrame) {
+		JDialog dialog = new JDialog(parentFrame, "Metric options", true);
+
+
+		// Create components for the dialog
+		//Create the Naming part
+		JLabel labelName = new JLabel("Name :");
+		JPanel namepane = new JPanel();
+		namepane.setLayout(new BoxLayout(namepane, BoxLayout.LINE_AXIS));
+		namepane.add(labelName);
+		namepane.add(Box.createHorizontalGlue()) ;
+		JTextField inputName = new JTextField();
+
+		//Create the dimension part
+		JLabel labelDimension = new JLabel("Dimension :");
+		JPanel dimensionpane = new JPanel();
+		dimensionpane.setLayout(new BoxLayout(dimensionpane, BoxLayout.LINE_AXIS));
+		dimensionpane.add(labelDimension);
+		dimensionpane.add(Box.createHorizontalGlue()) ;
+		JTextField inputDimension = new JTextField();
+
+		//Create the path of the file 
+		JLabel labelPath = new JLabel("Path :");
+		JPanel pathPane = new JPanel();
+		pathPane.setLayout(new BoxLayout(pathPane, BoxLayout.LINE_AXIS));
+		pathPane.add(labelPath);
+		pathPane.add(Box.createHorizontalGlue()) ;
+		JTextField inputPath = new JTextField();
+
+
+		//Create dialog buttons and layout
+		JButton closeButton = new JButton("Close");
+		JButton addButton = new JButton("Add");
 		
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			String dimensionName = inputName.getText();
-			String dimension = inputDimension.getText();
-			amc.addMetricButton(dimensionName, dimension);
-			dialog.dispose();
+		addButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String dimensionName = inputName.getText();
+				String dimension = inputDimension.getText();
+				String path = inputPath.getText() ;
+				amc.addMetricButton(dimensionName, dimension, path);
+				dialog.dispose();
+
+			}
+		}) ;
+		JPanel buttonPane = new JPanel() ;
+		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+		buttonPane.add(Box.createHorizontalGlue());
+		buttonPane.add(addButton) ; 
+		buttonPane.add(Box.createRigidArea(new Dimension(10,0)));
+		buttonPane.add(closeButton) ; 
+
+
+		// Add components to the dialog
+		JPanel jp = new JPanel();
+		jp.setLayout(new BoxLayout(jp,BoxLayout.PAGE_AXIS));
+		inputName.setPreferredSize(new Dimension(300, inputName.getHeight()+ 10));
+		inputDimension.setPreferredSize(new Dimension(300, inputDimension.getHeight()+ 10));
+		inputPath.setPreferredSize(new Dimension(300, inputPath.getHeight()+ 10));
+		jp.add(namepane);
+		jp.add(Box.createRigidArea(new Dimension(0,5)));
+		jp.add(inputName);
+		jp.add(dimensionpane);
+		jp.add(Box.createRigidArea(new Dimension(0,5)));
+		jp.add(inputDimension);
+		jp.add(pathPane) ; 
+		jp.add(Box.createRigidArea(new Dimension(0,5)));
+		jp.add(inputPath);
+		jp.add(buttonPane);
+		dialog.add(jp);
+
+		// Set up action for the close button
+		closeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Close the dialog when the button is clicked
+				dialog.dispose();
+			}
+		});
+
+		// Set dialog properties
+		dialog.setSize(400, 200);
+		dialog.setLocationRelativeTo(parentFrame);
+		dialog.setVisible(true);
+	}
+	public void addMetricToNtemplate(String dimensionName, String dimension, String path) {
+		JButton newDimension = new JButton(dimensionName) ;
+		newDimension.addActionListener(new ActionListener() {
 			
-		}
-	}) ;
-    JPanel buttonPane = new JPanel() ;
-    buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
-    buttonPane.add(Box.createHorizontalGlue());
-    buttonPane.add(addButton) ; 
-    buttonPane.add(Box.createRigidArea(new Dimension(10,0)));
-    buttonPane.add(closeButton) ; 
-    
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					amc.showContent(path, dimensionName, "time","value");
+					
+					
+				} catch (NumberFormatException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		newDimension.setToolTipText( dimension);
+		JPanel newAddPanel = new JPanel();
+		newAddPanel.setLayout(new BoxLayout(newAddPanel, BoxLayout.LINE_AXIS));
+		newAddPanel.add(Box.createHorizontalGlue()) ; 
+		newAddPanel.add(newDimension);
+		newAddPanel.add(Box.createHorizontalGlue()) ; 
+		centerButt.add(newAddPanel) ;
+		centerButt.add(Box.createRigidArea(new Dimension(0,10)));
+		Ntemplate.revalidate();
 
-    // Add components to the dialog
-    JPanel jp = new JPanel();
-    jp.setLayout(new BoxLayout(jp,BoxLayout.PAGE_AXIS));
-    inputName.setPreferredSize(new Dimension(300, inputName.getHeight()));
-    inputDimension.setPreferredSize(new Dimension(300, inputDimension.getHeight()));
-    jp.add(namepane);
-    jp.add(Box.createRigidArea(new Dimension(0,5)));
-    jp.add(inputName);
-    jp.add(dimensionpane);
-    jp.add(inputDimension);
-    jp.add(buttonPane);
-    dialog.add(jp);
 
-    // Set up action for the close button
-    closeButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Close the dialog when the button is clicked
-            dialog.dispose();
-        }
-    });
+	}
 
-    // Set dialog properties
-    dialog.setSize(400, 150);
-    dialog.setLocationRelativeTo(parentFrame);
-    dialog.setVisible(true);
-}
-public void addMetricToNtemplate(String dimensionName, String dimension) {
-	JButton newDimension = new JButton(dimensionName) ;
-	newDimension.setToolTipText( dimension);
-	JPanel newAddPanel = new JPanel();
-	newAddPanel.setLayout(new BoxLayout(newAddPanel, BoxLayout.LINE_AXIS));
-	newAddPanel.add(Box.createHorizontalGlue()) ; 
-	newAddPanel.add(newDimension);
-	newAddPanel.add(Box.createHorizontalGlue()) ; 
-	centerButt.add(newAddPanel) ;
-	centerButt.add(Box.createRigidArea(new Dimension(0,10)));
-	Ntemplate.revalidate();
-	
-}
+	public void setGraphContent(ChartPanel frame) {
+		graph.add(frame, BorderLayout.CENTER) ;
+		Ntemplate.revalidate();
+	}
+
+
+
+
 }
