@@ -30,6 +30,7 @@ import org.jfree.chart.ChartPanel;
 
 import control.AddMetricControl;
 import control.MenuControl;
+import control.StorageControl;
 
 
 public class FrameIMSAT extends JFrame {
@@ -126,7 +127,7 @@ public class FrameIMSAT extends JFrame {
 		addPanel.add(Box.createHorizontalGlue()) ; 
 		addPanel.add(addMetric);
 		addPanel.add(Box.createHorizontalGlue()) ;
-		centerButt.add(Box.createRigidArea(new Dimension(0,30))) ;
+		centerButt.add(Box.createRigidArea(new Dimension(0,50))) ;
 		centerButt.add(addPanel) ; 
 		centerButt.add(Box.createRigidArea(new Dimension(0,10)));
 		metrics.add(centerButt, BorderLayout.CENTER);
@@ -157,8 +158,6 @@ public class FrameIMSAT extends JFrame {
 		gNorth2.add(graphLabel, BorderLayout.CENTER) ; 
 		//
 		graph.add(gNorth2, BorderLayout.NORTH);
-		JButton screenShot = new JButton("ScreenShot") ;
-		
 		c2.gridx = 1 ; 
 		c2.gridy = 0 ; 
 		Ntemplate.add(graph, c2) ;
@@ -184,7 +183,22 @@ public class FrameIMSAT extends JFrame {
 		gNorth3.setPreferredSize(new Dimension(storage.getWidth(),60));
 		gNorth3.add(storageLabel, BorderLayout.CENTER) ;
 		//
+		JButton screenShot = new JButton("ScreenShot") ;
+		StorageControl sc = new StorageControl() ; 
+		screenShotListner sdl = new screenShotListner(sc, this );
+		screenShot.addActionListener(sdl);
+		JPanel storageButtons = new JPanel();
+		storageButtons.setLayout(new BoxLayout(storageButtons, BoxLayout.Y_AXIS));
+		storageButtons.add(Box.createRigidArea(new Dimension (storage.getWidth(), 50)));
+		storageButtons.add(screenShot); 
+		JPanel buttonAdapter = new JPanel() ; 
+		buttonAdapter.setLayout(new FlowLayout());
+		buttonAdapter.add(Box.createHorizontalGlue());
+		buttonAdapter.add(screenShot);
+		buttonAdapter.add(Box.createHorizontalGlue());
+		storageButtons.add(buttonAdapter) ; 
 		storage.add(gNorth3, BorderLayout.NORTH);
+		storage.add(storageButtons, BorderLayout.CENTER) ; 
 		c3.gridx = 2; 
 		c3.gridy = 0 ; 
 		Ntemplate.add(storage, c3) ; 

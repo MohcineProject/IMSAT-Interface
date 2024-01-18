@@ -85,6 +85,7 @@ public class HandleData {
 	public void screenShot(String filePath, Component component) {
 	      try {
 	            // Create a BufferedImage to store the screenshot
+	    	  	System.out.println("Starting .....");
 	            BufferedImage image = new BufferedImage(component.getWidth(), component.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
 	            // Create a Graphics object from the image
@@ -96,7 +97,9 @@ public class HandleData {
 	            // Dispose of the graphics object
 	            graphics.dispose();
 
+	          
 	            // Save the screenshot to a file
+	            System.out.println("Ending .....");
 	            File output = new File(filePath);
 	            ImageIO.write(image, "png", output);
 

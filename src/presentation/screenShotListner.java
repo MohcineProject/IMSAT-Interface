@@ -2,10 +2,10 @@ package presentation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
 import org.jfree.chart.ChartPanel;
 
 import control.StorageControl;
+
 
 public class screenShotListner implements ActionListener {
 	
@@ -19,7 +19,8 @@ public class screenShotListner implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		ChartPanel cp = (ChartPanel) fr.graph.getComponent(1);
+		
+		sc.screenShot("C:\\Users\\HP\\Desktop\\HeyTherItsMe.png", fr.graph.getComponent(1));
 		
 		
 	}
