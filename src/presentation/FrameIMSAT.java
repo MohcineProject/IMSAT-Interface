@@ -16,12 +16,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -31,19 +31,23 @@ import org.jfree.chart.ChartPanel;
 import control.AddMetricControl;
 import control.MenuControl;
 import control.StorageControl;
+import ui_elements.BackgroundPanel;
+import ui_elements.CustomButton;
+import ui_elements.MyButton;
+import ui_elements.TransparentPanel;
 
 
 public class FrameIMSAT extends JFrame {
-	JPanel Ntemplate ;
-	JPanel helpPage ;
-	JPanel metrics ; 
-	JPanel centerButt ; 
-	JPanel graph ;
+	BackgroundPanel Ntemplate ;
+	BackgroundPanel helpPage ;
+	TransparentPanel metrics ; 
+	TransparentPanel centerButt ; 
+	TransparentPanel graph ;
 	AddMetricControl amc ; 
 	public FrameIMSAT() {
 		super("TMSAT") ; 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-
+		
 		//Configuring the Menu Items 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -64,9 +68,10 @@ public class FrameIMSAT extends JFrame {
 		mnNewMenu.add(mntmNewMenuItem_2);
 
 		//Creating the Welcome Panel 
-		JPanel welcome = new JPanel() ;
+		BackgroundPanel welcome = new BackgroundPanel() ;
 		JLabel hello = new JLabel(" Welcome in the cube satellite \n Interface ") ;
 		Font helloWriting = new Font("Algerian", Font.PLAIN ,16  );
+		hello.setForeground(Color.WHITE);
 		welcome.setLayout(new GridBagLayout());
 		hello.setFont(helloWriting);
 		hello.setHorizontalAlignment(JLabel.CENTER) ;
@@ -78,15 +83,14 @@ public class FrameIMSAT extends JFrame {
 		c.anchor = GridBagConstraints.CENTER ; 
 		c.gridwidth = 1 ;
 		c.gridheight = 1 ; 
-		welcome.add(hello,c ) ; 
-		setContentPane(welcome);
-
+		welcome.add(hello,c ) ;
+		add(welcome);
 		
 		
 		
 		//Creating the second page of the templates 
 		//Creating the global Plane
-		Ntemplate = new JPanel();
+		Ntemplate = new BackgroundPanel();
 		GridBagLayout gbl_Ntemplate = new GridBagLayout();
 		gbl_Ntemplate.rowWeights = new double[]{1.0};
 		gbl_Ntemplate.columnWeights = new double[]{1.0, 1.0, 1.0};
@@ -101,7 +105,7 @@ public class FrameIMSAT extends JFrame {
 		GridBagConstraints c1 = new GridBagConstraints();
 		c1.fill = GridBagConstraints.BOTH ;
 		c1.gridheight = 1 ; 
-		metrics = new JPanel() ; 
+		metrics = new TransparentPanel() ; 
 		metrics.setLayout(new BorderLayout());
 		metrics.setMaximumSize(metrics.getSize());
 		JLabel metricsLabel = new JLabel("metrics");
@@ -109,20 +113,20 @@ public class FrameIMSAT extends JFrame {
 		metricsLabel.setOpaque(true);
 		metricsLabel.setHorizontalAlignment(JLabel.CENTER);
 		//
-		JPanel gNorth1 = new JPanel() ;
+		TransparentPanel gNorth1 = new TransparentPanel() ;
 		gNorth1.setLayout(new BorderLayout());
 		gNorth1.setPreferredSize(new Dimension(metrics.getWidth(),60));
 		gNorth1.add(metricsLabel, BorderLayout.CENTER) ;
 		//
 		metrics.add(gNorth1,BorderLayout.NORTH);
-		JButton addMetric = new JButton("Add a metric") ;
+		MyButton addMetric = new MyButton("Add a metric") ;
 		amc = new AddMetricControl(this) ; 
 		AddMetricListener aml = new AddMetricListener(amc, this) ; 
 		addMetric.addActionListener(aml);
 
-		centerButt = new JPanel();
+		centerButt = new TransparentPanel();
 		centerButt.setLayout(new BoxLayout(centerButt , BoxLayout.PAGE_AXIS));
-		JPanel addPanel = new JPanel();
+		TransparentPanel addPanel = new TransparentPanel();
 		addPanel.setLayout(new BoxLayout(addPanel, BoxLayout.LINE_AXIS));
 		addPanel.add(Box.createHorizontalGlue()) ; 
 		addPanel.add(addMetric);
@@ -145,14 +149,14 @@ public class FrameIMSAT extends JFrame {
 		c2.fill = GridBagConstraints.BOTH;
 		c2.anchor = GridBagConstraints.CENTER;
 		c2.gridheight = 1;
-		graph = new JPanel() ; 
+		graph = new TransparentPanel() ; 
 		graph.setLayout(new BorderLayout());
 		JLabel graphLabel = new JLabel("graph");
 		graphLabel.setBackground(new Color(255));
 		graphLabel.setOpaque(true);
 		graphLabel.setHorizontalAlignment(JLabel.CENTER);
 		//
-		JPanel gNorth2 = new JPanel() ;
+		TransparentPanel gNorth2 = new TransparentPanel() ;
 		gNorth2.setLayout(new BorderLayout());
 		gNorth2.setPreferredSize(new Dimension(graph.getWidth(),60));
 		gNorth2.add(graphLabel, BorderLayout.CENTER) ; 
@@ -171,27 +175,27 @@ public class FrameIMSAT extends JFrame {
 		c3.anchor = GridBagConstraints.EAST;
 		c3.gridwidth = 1;
 		c3.gridheight = 1;
-		JPanel storage = new JPanel() ; 
+		TransparentPanel storage = new TransparentPanel() ; 
 		JLabel storageLabel = new JLabel("storage");
 		storage.setLayout(new BorderLayout());
 		storageLabel.setBackground(new Color(255));
 		storageLabel.setOpaque(true);
 		storageLabel.setHorizontalAlignment(JLabel.CENTER);
 		//
-		JPanel gNorth3 = new JPanel() ;
+		TransparentPanel gNorth3 = new TransparentPanel() ;
 		gNorth3.setLayout(new BorderLayout());
 		gNorth3.setPreferredSize(new Dimension(storage.getWidth(),60));
 		gNorth3.add(storageLabel, BorderLayout.CENTER) ;
 		//
-		JButton screenShot = new JButton("ScreenShot") ;
+		MyButton screenShot = new MyButton("ScreenShot") ;
 		StorageControl sc = new StorageControl() ; 
 		screenShotListner sdl = new screenShotListner(sc, this );
 		screenShot.addActionListener(sdl);
-		JPanel storageButtons = new JPanel();
+		TransparentPanel storageButtons = new TransparentPanel();
 		storageButtons.setLayout(new BoxLayout(storageButtons, BoxLayout.Y_AXIS));
 		storageButtons.add(Box.createRigidArea(new Dimension (storage.getWidth(), 50)));
 		storageButtons.add(screenShot); 
-		JPanel buttonAdapter = new JPanel() ; 
+		TransparentPanel buttonAdapter = new TransparentPanel() ; 
 		buttonAdapter.setLayout(new FlowLayout());
 		buttonAdapter.add(Box.createHorizontalGlue());
 		buttonAdapter.add(screenShot);
@@ -208,11 +212,11 @@ public class FrameIMSAT extends JFrame {
 		
 		
 		//Design the help Page:
-		helpPage = new JPanel() ; 
+		helpPage = new BackgroundPanel() ; 
 		helpPage.setLayout(new BorderLayout());
 		String helpTitleText = "IMSAT project : " ; 
 		JLabel helpTitle = new JLabel(helpTitleText) ; 
-		JPanel titlePanel = new JPanel() ; 
+		TransparentPanel titlePanel = new TransparentPanel() ; 
 		titlePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		titlePanel.add(helpTitle);
 		JTextArea helpDescription = new JTextArea("The IMSAT project is conducted by the IMSAT club at IMT atlantique. It aims at sending a cubesat to a high altitude in order to capture"+ "\n" 
@@ -220,7 +224,7 @@ public class FrameIMSAT extends JFrame {
 				+ " as to display and store useful information for the user. This application under continuous developement for educational purposes. The "+ "\n"
 				+ "code is freely available on Github, in Java. We are relying on futur developements to further enhance the application and add more "+ "\n"
 				+ "features (specially from the TAF DCL students to gain a hand on experience in coding ") ; 
-		JPanel helpDescriptionPanel = new JPanel();
+		TransparentPanel helpDescriptionPanel = new TransparentPanel();
 		helpDescriptionPanel.setLayout(new FlowLayout(FlowLayout.LEADING)) ; 
 		helpDescriptionPanel.add(helpDescription);
 		helpPage.add(titlePanel, BorderLayout.NORTH) ; 
@@ -258,7 +262,7 @@ public class FrameIMSAT extends JFrame {
 		// Create components for the dialog
 		//Create the Naming part
 		JLabel labelName = new JLabel("Name :");
-		JPanel namepane = new JPanel();
+		TransparentPanel namepane = new TransparentPanel();
 		namepane.setLayout(new BoxLayout(namepane, BoxLayout.LINE_AXIS));
 		namepane.add(labelName);
 		namepane.add(Box.createHorizontalGlue()) ;
@@ -266,7 +270,7 @@ public class FrameIMSAT extends JFrame {
 
 		//Create the dimension part
 		JLabel labelDimension = new JLabel("Dimension :");
-		JPanel dimensionpane = new JPanel();
+		TransparentPanel dimensionpane = new TransparentPanel();
 		dimensionpane.setLayout(new BoxLayout(dimensionpane, BoxLayout.LINE_AXIS));
 		dimensionpane.add(labelDimension);
 		dimensionpane.add(Box.createHorizontalGlue()) ;
@@ -274,7 +278,7 @@ public class FrameIMSAT extends JFrame {
 
 		//Create the path of the file 
 		JLabel labelPath = new JLabel("Path :");
-		JPanel pathPane = new JPanel();
+		TransparentPanel pathPane = new TransparentPanel();
 		pathPane.setLayout(new BoxLayout(pathPane, BoxLayout.LINE_AXIS));
 		pathPane.add(labelPath);
 		pathPane.add(Box.createHorizontalGlue()) ;
@@ -282,8 +286,8 @@ public class FrameIMSAT extends JFrame {
 
 
 		//Create dialog buttons and layout
-		JButton closeButton = new JButton("Close");
-		JButton addButton = new JButton("Add");
+		MyButton closeButton = new MyButton("Close");
+		MyButton addButton = new MyButton("Add");
 		
 		addButton.addActionListener(new ActionListener() {
 
@@ -297,7 +301,7 @@ public class FrameIMSAT extends JFrame {
 
 			}
 		}) ;
-		JPanel buttonPane = new JPanel() ;
+		TransparentPanel buttonPane = new TransparentPanel() ;
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
 		buttonPane.add(Box.createHorizontalGlue());
 		buttonPane.add(addButton) ; 
@@ -306,7 +310,7 @@ public class FrameIMSAT extends JFrame {
 
 
 		// Add components to the dialog
-		JPanel jp = new JPanel();
+		TransparentPanel jp = new TransparentPanel();
 		jp.setLayout(new BoxLayout(jp,BoxLayout.PAGE_AXIS));
 		inputName.setPreferredSize(new Dimension(300, inputName.getHeight()+ 10));
 		inputDimension.setPreferredSize(new Dimension(300, inputDimension.getHeight()+ 10));
@@ -338,7 +342,7 @@ public class FrameIMSAT extends JFrame {
 		dialog.setVisible(true);
 	}
 	public void addMetricToNtemplate(String dimensionName, String dimension, String path) {
-		JButton newDimension = new JButton(dimensionName) ;
+		MyButton newDimension = new MyButton(dimensionName) ;
 		newDimension.addActionListener(new ActionListener() {
 			
 			@Override
@@ -355,7 +359,7 @@ public class FrameIMSAT extends JFrame {
 			}
 		});
 		newDimension.setToolTipText( dimension);
-		JPanel newAddPanel = new JPanel();
+		TransparentPanel newAddPanel = new TransparentPanel();
 		newAddPanel.setLayout(new BoxLayout(newAddPanel, BoxLayout.LINE_AXIS));
 		newAddPanel.add(Box.createHorizontalGlue()) ; 
 		newAddPanel.add(newDimension);
