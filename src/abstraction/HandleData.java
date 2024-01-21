@@ -4,8 +4,10 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -107,10 +109,37 @@ public class HandleData {
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
+	      
+	      
+	} 
 		
 		
+		
+	public void writeIntoFile(String fileName, String text ) {
+		fileName = fileName + ".IMSAT" ; 
+	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+	            // Write your code into the file
+	            writer.write(text);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
 	}
 	
-
+	public ArrayList<String[]>  captureData (String fileName) {
+		ArrayList<String[]> list = new ArrayList<String[]>() ; 
+		try(BufferedReader reader = new BufferedReader(new FileReader(fileName))){
+			String line ; 
+			while((line = reader.readLine()) != null) {
+				String[] data = line.split(";") ;
+				list.add(data) ; 
+				
+			}
+			
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		return list ; 
+		
+	}
 
 }

@@ -2,6 +2,7 @@ package presentation;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -18,12 +19,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import org.jfree.chart.ChartPanel;
 
@@ -44,10 +47,40 @@ public class FrameIMSAT extends JFrame {
 	TransparentPanel centerButt ; 
 	TransparentPanel graph ;
 	AddMetricControl amc ; 
+	JMenuItem newTemplate ;
+	JMenuItem HelpNewMenu ;
+	JMenuItem openTemplate ;
+	JMenuItem save ; 
+	
+	
+	public ArrayList<String> getButtonNames() {
+		return buttonNames;
+	}
+	public void setButtonNames(ArrayList<String> buttonNames) {
+		this.buttonNames = buttonNames;
+	}
+	public ArrayList<String> getDimensions() {
+		return dimensions;
+	}
+	public void setDimensions(ArrayList<String> dimensions) {
+		this.dimensions = dimensions;
+	}
+	public ArrayList<String> getPaths() {
+		return paths;
+	}
+	public void setPaths(ArrayList<String> paths) {
+		this.paths = paths;
+	}
+
+	ArrayList<String> buttonNames = new ArrayList<String>() ;
+	ArrayList<String> dimensions = new ArrayList<String>() ;
+	ArrayList<String> paths = new ArrayList<String>() ;
+	
+	
 	public FrameIMSAT() {
-		super("TMSAT") ; 
+		super("IMSAT") ; 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
+
 		//Configuring the Menu Items 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -55,27 +88,31 @@ public class FrameIMSAT extends JFrame {
 		JMenu mnNewMenu = new JMenu("File");
 		menuBar.add(mnNewMenu);
 
-		JMenuItem HelpNewMenu = new JMenuItem("Help");
+		HelpNewMenu = new JMenuItem("Help");
 		menuBar.add(HelpNewMenu);
 
-		JMenuItem mntmNewMenuItem = new JMenuItem("New Template");
-		mnNewMenu.add(mntmNewMenuItem);
+		newTemplate = new JMenuItem("New Template");
+		mnNewMenu.add(newTemplate);
 
-		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Open Template");
-		mnNewMenu.add(mntmNewMenuItem_1);
+		openTemplate = new JMenuItem("Open Template");
+		mnNewMenu.add(openTemplate);
 
-		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Save");
-		mnNewMenu.add(mntmNewMenuItem_2);
+		openTemplate.addActionListener(null);
+		
+		 save = new JMenuItem("Save");
+		mnNewMenu.add(save);
+		
 
 		//Creating the Welcome Panel 
 		BackgroundPanel welcome = new BackgroundPanel() ;
-		JLabel hello = new JLabel(" Welcome in the cube satellite \n Interface ") ;
+		JLabel hello = new JLabel("<html> Welcome to the cube satellite <br> Interface <html> ") ;
 		Font helloWriting = new Font("Algerian", Font.PLAIN ,16  );
 		hello.setForeground(Color.WHITE);
 		welcome.setLayout(new GridBagLayout());
 		hello.setFont(helloWriting);
-		hello.setHorizontalAlignment(JLabel.CENTER) ;
-		hello.setVerticalAlignment(JLabel.CENTER) ;
+		hello.setHorizontalAlignment(SwingConstants.CENTER) ;
+		hello.setVerticalAlignment(SwingConstants.CENTER) ;
+		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH ; 
 		c.gridx= 0 ; 
@@ -85,22 +122,30 @@ public class FrameIMSAT extends JFrame {
 		c.gridheight = 1 ; 
 		welcome.add(hello,c ) ;
 		add(welcome);
-		
-		
-		
-		//Creating the second page of the templates 
-		//Creating the global Plane
+		//Assigning the listeners 
+		MenuControl mc = new MenuControl(this);
+		//Listener of new Template
+		NewFileListener nfl = new NewFileListener(mc);
+		newTemplate.addActionListener(nfl);
+		//Listener of HelpPage
+		HelpListner helpPageListner = new HelpListner(mc);
+		HelpNewMenu.addActionListener(helpPageListner);
+		//Listener of the save file 
+		saveListner s = new saveListner (mc) ;
+		save.addActionListener(s);
+		//Listner of the open file 
+		OpenListner o = new OpenListner( mc) ; 
+		openTemplate.addActionListener(o);
+
+	}
+	public void createNewTemplate() {
 		Ntemplate = new BackgroundPanel();
 		GridBagLayout gbl_Ntemplate = new GridBagLayout();
 		gbl_Ntemplate.rowWeights = new double[]{1.0};
 		gbl_Ntemplate.columnWeights = new double[]{1.0, 1.0, 1.0};
 		Ntemplate.setLayout(gbl_Ntemplate);
 
-		
-		
-		
-		
-		
+
 		//Creating the metrics side
 		GridBagConstraints c1 = new GridBagConstraints();
 		c1.fill = GridBagConstraints.BOTH ;
@@ -167,9 +212,9 @@ public class FrameIMSAT extends JFrame {
 		Ntemplate.add(graph, c2) ;
 
 
-		
-		
-		
+
+
+
 		GridBagConstraints c3 = new GridBagConstraints();
 		c3.fill = GridBagConstraints.BOTH;
 		c3.anchor = GridBagConstraints.EAST;
@@ -207,45 +252,31 @@ public class FrameIMSAT extends JFrame {
 		c3.gridy = 0 ; 
 		Ntemplate.add(storage, c3) ; 
 
-		
-		
-		
-		
-		//Design the help Page:
+
+
+		setContentPane(Ntemplate);
+		Ntemplate.revalidate() ;
+	}
+	public void createHelpPage() {
 		helpPage = new BackgroundPanel() ; 
 		helpPage.setLayout(new BorderLayout());
 		String helpTitleText = "IMSAT project : " ; 
-		JLabel helpTitle = new JLabel(helpTitleText) ; 
+		JLabel helpTitle = new JLabel(helpTitleText) ;
+		helpTitle.setForeground(Color.WHITE);
 		TransparentPanel titlePanel = new TransparentPanel() ; 
 		titlePanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		titlePanel.add(helpTitle);
-		JTextArea helpDescription = new JTextArea("The IMSAT project is conducted by the IMSAT club at IMT atlantique. It aims at sending a cubesat to a high altitude in order to capture"+ "\n" 
-				+ " data and measurements of various physical attributes. This application is the designed to capture the data send by the satellite as well"+ "\n"
-				+ " as to display and store useful information for the user. This application under continuous developement for educational purposes. The "+ "\n"
-				+ "code is freely available on Github, in Java. We are relying on futur developements to further enhance the application and add more "+ "\n"
-				+ "features (specially from the TAF DCL students to gain a hand on experience in coding ") ; 
+		JLabel helpDescription = new JLabel("<html> The IMSAT project is conducted by the IMSAT club at IMT atlantique. It aims at sending a cubesat to a high altitude in order to capture"+ "<br>" 
+				+ " data and measurements of various physical attributes. This application is the designed to capture the data send by the satellite as well"+ "<br>"
+				+ " as to display and store useful information for the user. This application under continuous developement for educational purposes. The "+ "<br>"
+				+ "code is freely available on Github, in Java. We are relying on futur developements to further enhance the application and add more "+ "<br>"
+				+ "features (specially from the TAF DCL students to gain a hand on experience in coding <html>)") ;
+		helpDescription.setForeground(Color.WHITE);
 		TransparentPanel helpDescriptionPanel = new TransparentPanel();
 		helpDescriptionPanel.setLayout(new FlowLayout(FlowLayout.LEADING)) ; 
 		helpDescriptionPanel.add(helpDescription);
 		helpPage.add(titlePanel, BorderLayout.NORTH) ; 
 		helpPage.add(helpDescriptionPanel, BorderLayout.CENTER); 
-
-		//Assigning the listeners 
-		MenuControl mc = new MenuControl(this);
-		//Listener of new Template
-		NewFileListener nfl = new NewFileListener(mc);
-		mntmNewMenuItem.addActionListener(nfl);
-		//Listener of HelpPage
-		HelpListner helpPageListner = new HelpListner(mc);
-		HelpNewMenu.addActionListener(helpPageListner);
-
-
-	}
-	public void createNewTemplate() {
-		setContentPane(Ntemplate);
-		Ntemplate.revalidate() ;
-	}
-	public void createHelpPage() {
 		setContentPane(helpPage);
 		helpPage.revalidate() ;
 		this.revalidate();
@@ -288,7 +319,7 @@ public class FrameIMSAT extends JFrame {
 		//Create dialog buttons and layout
 		MyButton closeButton = new MyButton("Close");
 		MyButton addButton = new MyButton("Add");
-		
+
 		addButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -342,20 +373,24 @@ public class FrameIMSAT extends JFrame {
 		dialog.setVisible(true);
 	}
 	public void addMetricToNtemplate(String dimensionName, String dimension, String path) {
+		buttonNames.add(dimensionName) ; 
+		dimensions.add(dimension) ; 
+		paths.add(path) ; 
+		
 		MyButton newDimension = new MyButton(dimensionName) ;
 		newDimension.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					amc.showContent(path, dimensionName, "time","value");
-					
-					
+
+
 				} catch (NumberFormatException | IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
+
 			}
 		});
 		newDimension.setToolTipText( dimension);
