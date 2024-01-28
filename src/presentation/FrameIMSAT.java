@@ -2,9 +2,8 @@ package presentation;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -17,14 +16,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JTextArea;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -35,7 +33,6 @@ import control.AddMetricControl;
 import control.MenuControl;
 import control.StorageControl;
 import ui_elements.BackgroundPanel;
-import ui_elements.CustomButton;
 import ui_elements.MyButton;
 import ui_elements.TransparentPanel;
 
@@ -310,10 +307,24 @@ public class FrameIMSAT extends JFrame {
 		//Create the path of the file 
 		JLabel labelPath = new JLabel("Path :");
 		TransparentPanel pathPane = new TransparentPanel();
+		JFileChooser selectingPath = new JFileChooser();
+		MyButton selectPath = new MyButton("browse");
+		JTextField inputPath = new JTextField();
+		selectPath.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				selectingPath.showDialog(selectingPath, "select") ; 
+				String path = selectingPath.getSelectedFile().getAbsolutePath();
+				inputPath.setText(path);
+				
+			}
+		});
 		pathPane.setLayout(new BoxLayout(pathPane, BoxLayout.LINE_AXIS));
 		pathPane.add(labelPath);
 		pathPane.add(Box.createHorizontalGlue()) ;
-		JTextField inputPath = new JTextField();
+		
 
 
 		//Create dialog buttons and layout
@@ -354,7 +365,12 @@ public class FrameIMSAT extends JFrame {
 		jp.add(inputDimension);
 		jp.add(pathPane) ; 
 		jp.add(Box.createRigidArea(new Dimension(0,5)));
-		jp.add(inputPath);
+		TransparentPanel inputPathFull = new TransparentPanel() ; 
+		inputPathFull.setLayout(new BoxLayout(inputPathFull, BoxLayout.X_AXIS));
+		inputPathFull.add(inputPath);
+		inputPathFull.add(Box.createRigidArea(new Dimension(5,0)));
+		inputPathFull.add(selectPath);
+		jp.add(inputPathFull);
 		jp.add(buttonPane);
 		dialog.add(jp);
 
