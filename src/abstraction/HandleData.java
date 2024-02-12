@@ -59,8 +59,6 @@ public class HandleData {
 		ArrayList<int[]> points = new ArrayList<int[]>() ; 
 		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
 			String line;
-
-			// Read and print each line
 			while ((line = reader.readLine()) != null) {
 
 				try{
@@ -86,26 +84,15 @@ public class HandleData {
 	
 	public void screenShot(String filePath, Component component) {
 	      try {
-	            // Create a BufferedImage to store the screenshot
+	          
 	    	  	System.out.println("Starting .....");
 	            BufferedImage image = new BufferedImage(component.getWidth(), component.getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-	            // Create a Graphics object from the image
 	            Graphics graphics = image.getGraphics();
-
-	            // Paint the component onto the image
 	            component.paint(graphics);
-
-	            // Dispose of the graphics object
 	            graphics.dispose();
-
-	          
-	            // Save the screenshot to a file
 	            System.out.println("Ending .....");
 	            File output = new File(filePath);
 	            ImageIO.write(image, "png", output);
-
-	            
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
@@ -118,7 +105,6 @@ public class HandleData {
 	public void writeIntoFile(String fileName, String text ) {
 		fileName = fileName + ".IMSAT" ; 
 	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
-	            // Write your code into the file
 	            writer.write(text);
 	        } catch (IOException e) {
 	            e.printStackTrace();
